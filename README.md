@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./showcase.png" alt="TaskFlow Showcase" width="800">
+  <img src="./showcase.jpg" alt="TaskFlow Showcase" width="800">
   <h1>TaskFlow</h1>
   <p>An open-source task management app designed to simplify your workflow.</p>
 
