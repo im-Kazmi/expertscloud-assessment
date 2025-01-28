@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="./showcase.jpg" alt="TaskFlow Showcase" width="800">
   <h1>TaskFlow</h1>
   <p>An open-source task management app designed to simplify your workflow.</p>
 
@@ -15,6 +14,8 @@
 
 TaskFlow is an open-source task management application designed to help individuals and teams organize their tasks, projects, and workflows efficiently. With a clean and intuitive interface, TaskFlow empowers users to focus on what matters most—getting things done.
 
+  <img src="./showcase.jpg" alt="TaskFlow Showcase" width="800">
+
 ## Key Features
 
 - Task creation and organization
@@ -28,6 +29,10 @@ TaskFlow is an open-source task management application designed to help individu
 - API for integrations with other tools
 
 ## Tech Stack
+
+<div align="center">
+  <video src="./video-showcase.webm"  width="800"></video>
+</div>
 
 TaskFlow is built with a modern and robust tech stack:
 

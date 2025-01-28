@@ -4,10 +4,10 @@ import { Button } from "@repo/design-system/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function Example() {
+export default function Page() {
   return (
     <div className="bg-white">
-      <header className="absolute inset-x-0 top-0 z-50 ">
+      <header className="absolute inset-x-0 top-0 z-50 bg-white ">
         <nav
           aria-label="Global"
           className="flex items-center justify-between p-6 lg:px-8"
