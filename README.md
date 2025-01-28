@@ -30,7 +30,7 @@ TaskFlow is an open-source task management application designed to help individu
 
 ## Tech Stack
 
-<div align="center">
+<div align="start">
   <img src="./video-showcase.gif" alt="TaskFlow Demo" width="400">
 </div>
 
