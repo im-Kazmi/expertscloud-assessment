@@ -31,9 +31,7 @@ TaskFlow is an open-source task management application designed to help individu
 ## Tech Stack
 
 <div align="center">
-    <video width="800" height="240" controls>
-      <source src="./video-showcase.webm" type="video/webm">
-    </video>
+    <img src="./vide-showcase.gif" alt="TaskFlow Showcase" width="800">
 </div>
 
 TaskFlow is built with a modern and robust tech stack:
