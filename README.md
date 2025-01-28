@@ -1,13 +1,6 @@
 <div align="center">
   <h1>TaskFlow</h1>
   <p>An open-source task management app designed to simplify your workflow.</p>
-
-  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue)](https://www.typescriptlang.org/)
-  [![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)
-  [![Next.js](https://img.shields.io/badge/Next.js-13.4.7-blue)](https://nextjs.org/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.3.2-blue)](https://tailwindcss.com/)
-  [![Prisma](https://img.shields.io/badge/Prisma-4.15.0-blue)](https://www.prisma.io/)
 </div>
 
 ## Introduction
@@ -19,14 +12,10 @@ TaskFlow is an open-source task management application designed to help individu
 ## Key /div>Features
 
 - Task creation and organization
-- Project management with task grouping
-- Due date and priority settings
-- Collaboration with team members
-- Progress tracking and analytics
-- Cross-platform synchronization
+- Task grouping
+- Priority settings
 - Customizable task views
 - Secure and private data handling
-- API for integrations with other tools
 
 ## Tech Stack
 
@@ -37,12 +26,15 @@ TaskFlow is an open-source task management application designed to help individu
 TaskFlow is built with a modern and robust tech stack:
 
 - **Frontend**: Next.js, Tailwind CSS
-- **Backend**: Hono.js
-- **Database**: PostgreSQL
+- **Components library**: RadixUI
+- **API**: Hono.js
+- **rpc**: Hono RPC
+- **Server State**: Tanstack React Query
+- **UI State**: Zustand
+- **Database**: Neon Serverless Postgres Database
 - **ORM**: Prisma
-- **Authentication**: Clerk
+- **Authentication**: NextAuth
 - **Deployment**: Vercel
-- **CI/CD**: GitHub Actions
 
 ## Installation
 
