@@ -32,7 +32,7 @@ TaskFlow is an open-source task management application designed to help individu
 
 <div align="center">
     <video width="800" height="240" controls>
-      <source src="video-showcase.webm" type="video/webm">
+      <source src="./video-showcase.webm" type="video/webm">
     </video>
 </div>
 
