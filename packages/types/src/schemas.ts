@@ -29,3 +29,16 @@ export const updateTaskSchema = z.object({
 export const assignUserSchema = z.object({
   userId: z.string(),
 });
+
+export const createProjectSchema = z.object({
+  name: z.string().min(2, {
+    message: "Project name must be at least 2 characters.",
+  }),
+  description: z.string().optional(),
+  orgId: z.string(),
+});
+
+export const updateProjectSchema = z.object({
+  name: z.string().min(2).optional(),
+  description: z.string().optional(),
+});

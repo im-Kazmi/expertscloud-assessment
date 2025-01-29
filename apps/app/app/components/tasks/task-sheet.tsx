@@ -17,12 +17,12 @@ import {
 } from "@repo/design-system/components/ui/select";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 
-interface TaskSheetProps {
+type TaskSheetProps = {
   task: any | null;
   onClose: () => void;
   onUpdateTask: (task: any) => void;
   onDeleteTask: (taskId: string) => void;
-}
+};
 
 export default function TaskSheet({
   task,

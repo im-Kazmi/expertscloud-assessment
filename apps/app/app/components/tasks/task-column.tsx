@@ -1,17 +1,28 @@
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { TaskCard } from "./task-card";
-import { Column, TaskWithOrg } from "../../lib/types";
 import { ScrollArea } from "@repo/design-system/components/ui/scroll-area";
-import { Task, Prisma, Organization } from "@prisma/client";
+import { Task } from "@prisma/client";
+import { cn } from "@repo/design-system/lib/utils";
+import { Column } from "@/app/lib/types";
+import { Loader } from "../shared/loader";
+import { TaskWithDateStrings } from "@/app/lib/types";
 
-interface TaskColumnProps {
+type TaskColumnProps = {
   column: Column;
-  tasks: TaskWithOrg[];
-}
+  tasks: TaskWithDateStrings[];
+  disabled?: boolean;
+};
 
-export function TaskColumn({ column, tasks }: TaskColumnProps) {
+export function TaskColumn({ column, tasks, disabled }: TaskColumnProps) {
   return (
-    <div className="bg-muted/50 p-6 border border-dashed">
+    <div
+      className={cn(
+        "bg-muted/50 p-6 border border-dashed relative",
+        disabled && "opacity-50 pointer-events-none",
+      )}
+    >
+      {disabled && <Loader />}
+
       <h2 className="text-2xl font-semibold mb-6 text-gray-700">
         {column.title}
       </h2>
@@ -42,7 +53,7 @@ export function TaskColumn({ column, tasks }: TaskColumnProps) {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <TaskCard task={task} />
+                      <TaskCard task={task as any} />
                     </div>
                   )}
                 </Draggable>

@@ -1,7 +1,5 @@
 "use client";
 
-const DialogProvider = () => {
+export const DialogProvider = () => {
   return <></>;
 };
-
-export default DialogProvider;

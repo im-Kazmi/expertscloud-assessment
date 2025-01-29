@@ -3,9 +3,9 @@ import { Calendar, Flag, User } from "lucide-react";
 import { format } from "date-fns";
 import { TaskWithOrg } from "@/app/lib/types";
 
-interface TaskCardProps {
+type TaskCardProps = {
   task: TaskWithOrg;
-}
+};
 
 export function TaskCard({ task }: TaskCardProps) {
   const getPriorityColor = (priority: string) => {
@@ -28,12 +28,9 @@ export function TaskCard({ task }: TaskCardProps) {
           {task.title}
         </div>
         <div className="space-y-2">
-          {task.assigneeId && (
-            <div className="flex items-center text-sm text-gray-600">
-              <User className="mr-2 h-4 w-4" />
-              {task.assigneeId}
-            </div>
-          )}
+          <div className="flex items-center text-sm text-gray-600">
+            {task.description}
+          </div>
           {task.dueDate && (
             <div className="flex items-center text-sm text-gray-600">
               <Calendar className="mr-2 h-4 w-4" />

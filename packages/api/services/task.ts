@@ -53,7 +53,6 @@ export class TaskService extends BaseService {
       const task = await prisma.task.findUnique({
         where: { id },
         include: {
-          org: true,
           assignees: {
             include: {
               user: true,
@@ -68,12 +67,11 @@ export class TaskService extends BaseService {
     }
   }
 
-  async getTasksByOrgId(orgId: string) {
+  async getTasksByOrgId(projectId: string) {
     try {
       const tasks = await prisma.task.findMany({
-        where: { orgId },
+        where: { projectId },
         include: {
-          org: true,
           assignees: {
             include: {
               user: true,
@@ -156,7 +154,6 @@ export class TaskService extends BaseService {
         include: {
           task: {
             include: {
-              org: true,
               project: true,
             },
           },
@@ -171,4 +168,57 @@ export class TaskService extends BaseService {
       );
     }
   }
+
+  // async getBurndownData(projectId: string) {
+  //   try {
+  //     // Fetch all tasks for the project
+  //     const tasks = await prisma.task.findMany({
+  //       where: { projectId },
+  //       select: {
+  //         id: true,
+  //         status: true,
+  //         createdAt: true,
+  //         completedAt: true,
+  //       },
+  //     });
+
+  //     // Calculate the total number of tasks
+  //     const totalTasks = tasks.length;
+
+  //     // Group tasks by date and calculate remaining work
+  //     const burndownData: { date: string; remainingTasks: number }[] = [];
+  //     const taskCompletionMap: { [date: string]: number } = {};
+
+  //     // Initialize task completion map
+  //     tasks.forEach((task) => {
+  //       const date = task.completedAt
+  //         ? task.completedAt.toISOString().split("T")[0]
+  //         : null;
+  //       if (date) {
+  //         taskCompletionMap[date] = (taskCompletionMap[date] || 0) + 1;
+  //       }
+  //     });
+
+  //     // Calculate remaining tasks for each day
+  //     let remainingTasks = totalTasks;
+  //     const startDate = new Date(tasks[0]?.createdAt || new Date());
+  //     const endDate = new Date();
+  //     for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+  //       const dateKey = d.toISOString().split("T")[0];
+  //       const completedToday = taskCompletionMap[dateKey] || 0;
+  //       remainingTasks -= completedToday;
+
+  //       burndownData.push({
+  //         date: dateKey,
+  //         remainingTasks: remainingTasks < 0 ? 0 : remainingTasks,
+  //       });
+  //     }
+
+  //     return burndownData;
+  //   } catch (error) {
+  //     throw new Error(
+  //       `Error calculating burndown data: ${(error as Error).message}`,
+  //     );
+  //   }
+  // }
 }

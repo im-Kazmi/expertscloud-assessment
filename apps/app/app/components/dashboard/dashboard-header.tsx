@@ -7,9 +7,8 @@ type Props = {
 
 const DashboardHeader = ({ children }: Props) => {
   return (
-    <div className=" flex flex-col gap-y-2  mb-5">
-      <div className=" flex justify-between w-full">{children}</div>
-      <Separator className=" w-full" />
+    <div className=" flex h-14 bg-muted border border-dashed justify-between w-full items-center px-3">
+      {children}
     </div>
   );
 };

@@ -17,11 +17,11 @@ import {
 } from "@repo/design-system/components/ui/select";
 import { Textarea } from "@repo/design-system/components/ui/textarea";
 
-interface TaskDialogProps {
+type TaskDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onAddTask: (task: any) => void;
-}
+};
 
 export default function TaskDialog({
   isOpen,
