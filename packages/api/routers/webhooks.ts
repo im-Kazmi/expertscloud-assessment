@@ -20,7 +20,7 @@ const app = new Hono()
     if (!svixId || !svixTimestamp || !svixSignature) {
       return c.json("Error occurred -- missing svix headers", 400);
     }
-    const CLERK_WEBHOOK_SECRET = "whsec_M+mHQrkRRmbLiYuOG/leU48H0z232lq7";
+    const CLERK_WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET!;
 
     if (!CLERK_WEBHOOK_SECRET) {
       return c.json(
