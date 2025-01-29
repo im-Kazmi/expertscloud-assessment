@@ -120,10 +120,10 @@ const app = new Hono()
       },
     });
 
-    return c.json(task, 201);
+    return c.json(task, 200);
   })
 
-  .put("/:id", zValidator("json", updateTaskSchema), async (c) => {
+  .post("/:id/update", zValidator("json", updateTaskSchema), async (c) => {
     const { id } = c.req.param();
     const taskService = c.var.taskService;
     const values = c.req.valid("json");
@@ -133,7 +133,7 @@ const app = new Hono()
     return c.json(updatedTask, 200);
   })
 
-  .delete("/:id", async (c) => {
+  .post("/:id/delete", async (c) => {
     const { id } = c.req.param();
     const taskService = c.var.taskService;
 
@@ -157,11 +157,12 @@ const app = new Hono()
     return c.json(task, 200);
   })
 
-  .post("/:id/unassign", async (c) => {
+  .post("/:id/unassign", zValidator("json", assignUserSchema), async (c) => {
     const { id } = c.req.param();
     const taskService = c.var.taskService;
+    const { userId } = c.req.valid("json");
 
-    const task = await taskService.unassignUserFromTask(id);
+    const task = await taskService.unassignUserFromTask(id, userId);
 
     return c.json(task, 200);
   });

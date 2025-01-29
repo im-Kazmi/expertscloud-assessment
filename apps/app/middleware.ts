@@ -3,7 +3,6 @@ import { clerkMiddleware, createRouteMatcher } from "@repo/auth/server";
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/onboarding(.*)",
-  "/api/webhooks/clerk",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

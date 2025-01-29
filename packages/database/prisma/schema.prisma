@@ -9,19 +9,20 @@ generator client {
 }
 
 model User {
-  clerkId         String        @id
+  clerkId         String         @id
   name            String
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  email           String        @unique
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  email           String         @unique
   avatarUrl       String?
   blockedAt       DateTime?
-  meta            Json          @default("{}")
-  profileSettings Json          @default("{}")
-  featureSettings Json          @default("{}")
-  Organization    Organization? @relation(fields: [organizationId], references: [id])
+  meta            Json           @default("{}")
+  profileSettings Json           @default("{}")
+  featureSettings Json           @default("{}")
+  Organization    Organization?  @relation(fields: [organizationId], references: [id])
   organizationId  String?
   tasks           Task[]
+  assignedTasks   TaskAssignee[]
 }
 
 model Organization {
@@ -37,8 +38,24 @@ model Organization {
   updatedAt               DateTime @updatedAt
   publicMetadata          Json     @default("{}")
 
-  users User[]
-  Task  Task[]
+  users    User[]
+  tasks    Task[]
+  projects Project[]
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orgId String
+  org   Organization @relation(fields: [orgId], references: [id])
+
+  tasks Task[]
+
+  @@map("projects")
 }
 
 enum TastStats {
@@ -67,8 +84,25 @@ model Task {
   orgId String
   org   Organization @relation(fields: [orgId], references: [id])
 
-  assigneeId String?
-  assignee   User?   @relation(fields: [assigneeId], references: [clerkId])
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
+
+  assignees   TaskAssignee[]
+  User        User?          @relation(fields: [userClerkId], references: [clerkId])
+  userClerkId String?
 
   @@map("tasks")
+}
+
+model TaskAssignee {
+  id         String   @id @default(uuid())
+  taskId     String
+  userId     String
+  assignedAt DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+  @@map("task_assignees")
 }

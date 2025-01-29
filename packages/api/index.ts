@@ -7,7 +7,7 @@ import { prettyJSON } from "hono/pretty-json";
 
 const app = new Hono().basePath("/api").use(prettyJSON());
 
-const routes = app.route("task", task).route("webhook", webhooks);
+const routes = app.route("/task", task).route("/webhooks", webhooks);
 
 export type AppType = typeof routes;
 

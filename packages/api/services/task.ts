@@ -54,7 +54,12 @@ export class TaskService extends BaseService {
         where: { id },
         include: {
           org: true,
-          assignee: true,
+          assignees: {
+            include: {
+              user: true,
+            },
+          },
+          project: true,
         },
       });
       return task;
@@ -69,9 +74,15 @@ export class TaskService extends BaseService {
         where: { orgId },
         include: {
           org: true,
-          assignee: true,
+          assignees: {
+            include: {
+              user: true,
+            },
+          },
+          project: true,
         },
       });
+
       return tasks;
     } catch (error) {
       throw new Error(
@@ -94,12 +105,10 @@ export class TaskService extends BaseService {
         throw new Error(`User does not exist with this ID.`);
       }
 
-      const updatedTask = await prisma.task.update({
-        where: { id: taskId },
+      const updatedTask = await prisma.taskAssignee.create({
         data: {
-          assignee: {
-            connect: { clerkId: userId },
-          },
+          taskId,
+          userId,
         },
       });
       return updatedTask;
@@ -110,22 +119,29 @@ export class TaskService extends BaseService {
     }
   }
 
-  async unassignUserFromTask(taskId: string) {
+  async unassignUserFromTask(taskId: string, userId: string) {
     try {
       const task = await this.getTaskById(taskId);
       if (!task) {
         throw new Error(`Task does not exist with this ID.`);
       }
 
-      const updatedTask = await prisma.task.update({
-        where: { id: taskId },
-        data: {
-          assignee: {
-            disconnect: true,
+      const user = await prisma.user.findUnique({
+        where: { clerkId: userId },
+      });
+      if (!user) {
+        throw new Error(`User does not exist with this ID.`);
+      }
+
+      const deletedAssignment = await prisma.taskAssignee.delete({
+        where: {
+          taskId_userId: {
+            taskId,
+            userId,
           },
         },
       });
-      return updatedTask;
+      return deletedAssignment;
     } catch (error) {
       throw new Error(
         `Error unassigning user from task: ${(error as Error).message}`,
@@ -135,13 +151,19 @@ export class TaskService extends BaseService {
 
   async getTasksByUserId(userId: string) {
     try {
-      const tasks = await prisma.task.findMany({
-        where: { assigneeId: userId },
+      const taskAssignees = await prisma.taskAssignee.findMany({
+        where: { userId },
         include: {
-          org: true,
-          assignee: true,
+          task: {
+            include: {
+              org: true,
+              project: true,
+            },
+          },
         },
       });
+
+      const tasks = taskAssignees.map((ta) => ta.task);
       return tasks;
     } catch (error) {
       throw new Error(
