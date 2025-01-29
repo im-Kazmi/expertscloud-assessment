@@ -2,9 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@repo/*": ["./*"],
-      "@repo/shared/*": ["../shared/*", "./*"]
+      "@/*": ["./*"]
     },
     "target": "ESNext",
     "module": "ESNext",

@@ -1,15 +1,13 @@
 import { Hono } from "hono";
 
 // routers
-// import product from "./routers/product";
+import task from "./routers/task";
+import webhooks from "./routers/webhooks";
 import { prettyJSON } from "hono/pretty-json";
 
 const app = new Hono().basePath("/api").use(prettyJSON());
 
-// make sure use route not get
-const routes = app.get("/products", async (c) => {
-  return c.json("just test");
-});
+const routes = app.route("task", task).route("webhook", webhooks);
 
 export type AppType = typeof routes;
 

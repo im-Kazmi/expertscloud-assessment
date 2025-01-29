@@ -1,5 +1,5 @@
 import { z } from "zod";
-export * from "zod";
+
 export const sortingAndPaginationSchema = z.object({
   page: z.string().optional(),
   pageSize: z.string().optional(),
@@ -12,7 +12,7 @@ export const createTaskSchema = z.object({
     message: "Task title must be at least 2 characters.",
   }),
   description: z.string().optional(),
-  status: z.enum(["TODO", "IN_PROGRESS", "DONE"]).optional(),
+  status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED"]).optional(),
   priority: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
   dueDate: z.string().optional(),
   orgId: z.string(),

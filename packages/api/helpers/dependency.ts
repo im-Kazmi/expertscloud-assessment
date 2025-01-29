@@ -1,5 +1,5 @@
 import type { Context, MiddlewareHandler } from "hono";
-import type { ClerkAuth, MaybePromise, Scope } from "@/types";
+import type { ClerkAuth, MaybePromise, Scope } from "../types";
 import { PrismaClient, prisma } from "@repo/database";
 import { getAuth } from "@hono/clerk-auth";
 
