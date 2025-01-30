@@ -1,90 +1,94 @@
-import { Label } from "@repo/design-system/components/ui/label";
-import MultipleSelector, {
-  Option,
-} from "@repo/design-system/components/ui/multiselect";
-import { useId } from "react";
+"use client";
+import { useOrganization } from "@repo/auth/client";
+import { useState, useEffect, useId } from "react";
+import MultipleSelector from "@repo/design-system/components/ui/multiselect";
+import { assignUserSchema } from "@repo/types";
 
-const frameworks: Option[] = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-    disable: true,
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-  {
-    value: "angular",
-    label: "Angular",
-  },
-  {
-    value: "vue",
-    label: "Vue.js",
-  },
-  {
-    value: "react",
-    label: "React",
-  },
-  {
-    value: "ember",
-    label: "Ember.js",
-  },
-  {
-    value: "gatsby",
-    label: "Gatsby",
-  },
-  {
-    value: "eleventy",
-    label: "Eleventy",
-    disable: true,
-  },
-  {
-    value: "solid",
-    label: "SolidJS",
-  },
-  {
-    value: "preact",
-    label: "Preact",
-  },
-  {
-    value: "qwik",
-    label: "Qwik",
-  },
-  {
-    value: "alpine",
-    label: "Alpine.js",
-  },
-  {
-    value: "lit",
-    label: "Lit",
-  },
-];
+type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  label: string;
+  value: string;
+  imageUrl?: string;
+  email?: string;
+};
 
-export function AssigneesMultiSelector() {
+export function AssigneesMultiSelector({
+  onChange,
+}: {
+  onChange: (userIds: string[]) => void;
+}) {
   const id = useId();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { organization } = useOrganization();
+
+  useEffect(() => {
+    async function fetchUsers() {
+      if (!organization) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const memberList = await organization.getMemberships();
+
+        if (!memberList?.data?.length) {
+          setError("No users found in this organization");
+          setLoading(false);
+          return;
+        }
+
+        const userList = memberList.data
+          .filter((membership) => membership.publicUserData)
+          .map((membership) => ({
+            id: membership.publicUserData.userId,
+            value: membership.publicUserData.userId,
+            label:
+              `${membership.publicUserData.firstName || ""} ${membership.publicUserData.lastName || ""}`.trim(),
+            firstName: membership.publicUserData.firstName ?? "Unknown",
+            lastName: membership.publicUserData.lastName ?? "User",
+            imageUrl: membership.publicUserData.imageUrl ?? "",
+            email: membership.publicUserData.identifier ?? "",
+          }));
+
+        setUsers(userList as any);
+      } catch (err) {
+        setError("Failed to fetch users");
+        console.error("Error fetching users:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUsers();
+  }, [organization]);
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+  onChange;
+
+  if (loading) {
+    return <div>Loading users...</div>;
+  }
+
+  if (!users.length) {
+    return <div>No users available</div>;
+  }
+
   return (
-    <div className="space-y-2">
-      <Label>Multiselect</Label>
+    <div className="space-y-2 z-[100] w-full">
       <MultipleSelector
-        commandProps={{
-          label: "Select frameworks",
-        }}
-        value={frameworks.slice(0, 2)}
-        defaultOptions={frameworks}
-        placeholder="Select frameworks"
+        commandProps={{ label: "Select Assignees" }}
+        defaultOptions={users.map((user) => ({
+          label: user.label,
+          value: user.value,
+        }))}
+        onChange={(opts) => onChange(opts.map((opt) => opt.value))}
+        placeholder="Select Assignees"
         hideClearAllButton
         hidePlaceholderWhenSelected
         emptyIndicator={<p className="text-center text-sm">No results found</p>}

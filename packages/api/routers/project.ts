@@ -46,10 +46,21 @@ const app = new Hono()
     return c.json(projects, 200);
   })
   .get("/:id", zValidator("param", z.object({ id: z.string() })), async (c) => {
+    const auth = getAuth(c);
+
+    if (!auth?.userId) {
+      return c.json(
+        {
+          message: "You are not logged in.",
+        },
+        400,
+      );
+    }
+
     const { id } = c.req.valid("param");
     const projectService = c.var.projectService;
 
-    const project = await projectService.getProjectById(id);
+    const project = await projectService.getProjectById(auth.orgId!, id);
 
     if (!project) {
       return c.json(
@@ -113,7 +124,11 @@ const app = new Hono()
     const projectService = c.var.projectService;
     const values = c.req.valid("json");
 
-    const updatedProject = await projectService.updateProject(id, values);
+    const updatedProject = await projectService.updateProject(
+      auth.orgId!,
+      id,
+      values,
+    );
     return c.json(updatedProject, 200);
   })
   .post("/:id/delete", async (c) => {
@@ -131,7 +146,7 @@ const app = new Hono()
     const { id } = c.req.param();
     const projectService = c.var.projectService;
 
-    await projectService.deleteProject(id);
+    await projectService.deleteProject(auth.orgId!, id);
 
     return c.json(
       {
@@ -155,58 +170,11 @@ const app = new Hono()
     const { id } = c.req.param();
     const projectService = c.var.projectService;
 
-    const updatedProject = await projectService.markProjectAsCompleted(id);
+    const updatedProject = await projectService.markProjectAsCompleted(
+      auth.orgId!,
+      id,
+    );
     return c.json(updatedProject, 200);
-  })
-  .get("/completed/list", async (c) => {
-    const auth = getAuth(c);
-
-    if (!auth?.userId) {
-      return c.json(
-        {
-          message: "You are not logged in.",
-        },
-        400,
-      );
-    }
-
-    if (!auth.orgId) {
-      return c.json(
-        {
-          message: "No organization found for this user.",
-        },
-        400,
-      );
-    }
-
-    const projectService = c.var.projectService;
-    const projects = await projectService.getCompletedProjects(auth.orgId);
-    return c.json(projects, 200);
-  })
-  .get("/incomplete/list", async (c) => {
-    const auth = getAuth(c);
-
-    if (!auth?.userId) {
-      return c.json(
-        {
-          message: "You are not logged in.",
-        },
-        400,
-      );
-    }
-
-    if (!auth.orgId) {
-      return c.json(
-        {
-          message: "No organization found for this user.",
-        },
-        400,
-      );
-    }
-
-    const projectService = c.var.projectService;
-    const projects = await projectService.getIncompleteProjects(auth.orgId);
-    return c.json(projects, 200);
   });
 
 export default app;

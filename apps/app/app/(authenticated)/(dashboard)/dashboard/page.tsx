@@ -5,6 +5,7 @@ import { useGetProjects } from "@repo/features/project";
 import { ProjectCard } from "@/app/components/project/project-card";
 import { ScrollArea } from "@repo/design-system/components/ui/scroll-area";
 import ProjectCardSkeleton from "@/app/components/skeletons/project-card-skeleton";
+
 export default function Page() {
   const { data: projects, isLoading } = useGetProjects();
 

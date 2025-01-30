@@ -42,7 +42,6 @@ export function TaskForm({
 }: Props) {
   const form = useForm<CreateTaskFormValues>({
     defaultValues: defaultValues,
-    // resolver: zodResolver(createTaskSchema),
   });
 
   function handleDelete() {
@@ -50,7 +49,7 @@ export function TaskForm({
   }
 
   return (
-    <div className="pt-4">
+    <div className="pt-4 w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

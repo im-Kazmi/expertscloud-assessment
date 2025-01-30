@@ -1,3 +1,4 @@
+"use client";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { TaskCard } from "./task-card";
 import { ScrollArea } from "@repo/design-system/components/ui/scroll-area";

@@ -33,16 +33,16 @@ export class ProjectService extends BaseService {
     }
   }
 
-  async deleteProject(id: string) {
+  async deleteProject(orgId: string, id: string) {
     try {
-      const exists = await this.getProjectById(id);
+      const exists = await this.getProjectById(orgId, id);
 
       if (!exists) {
         throw new Error(`Project does not exist with this ID.`);
       }
 
       await prisma.project.delete({
-        where: { id },
+        where: { id, orgId },
       });
       return { message: "Project deleted successfully" };
     } catch (error) {
@@ -50,16 +50,20 @@ export class ProjectService extends BaseService {
     }
   }
 
-  async updateProject(id: string, values: Prisma.ProjectUpdateInput) {
+  async updateProject(
+    orgId: string,
+    id: string,
+    values: Prisma.ProjectUpdateInput,
+  ) {
     try {
-      const exists = await this.getProjectById(id);
+      const exists = await this.getProjectById(orgId, id);
 
       if (!exists) {
         throw new Error(`Project does not exist with this ID.`);
       }
 
       const updatedProject = await prisma.project.update({
-        where: { id },
+        where: { id, orgId },
         data: values,
       });
       return updatedProject;
@@ -68,10 +72,10 @@ export class ProjectService extends BaseService {
     }
   }
 
-  async getProjectById(id: string) {
+  async getProjectById(orgId: string, id: string) {
     try {
       const project = await prisma.project.findUnique({
-        where: { id },
+        where: { id, orgId },
         include: {
           tasks: {
             include: {
@@ -115,9 +119,9 @@ export class ProjectService extends BaseService {
     }
   }
 
-  async markProjectAsCompleted(id: string) {
+  async markProjectAsCompleted(orgId: string, id: string) {
     try {
-      const exists = await this.getProjectById(id);
+      const exists = await this.getProjectById(orgId, id);
 
       if (!exists) {
         throw new Error(`Project does not exist with this ID.`);
