@@ -15,6 +15,8 @@ export function TaskCard({ task }: TaskCardProps) {
       case "MEDIUM":
         return "bg-yellow-200 text-yellow-800";
       case "HIGH":
+        return "bg-orange-200 text-orange-800";
+      case "CRITICAL":
         return "bg-red-200 text-red-800";
       default:
         return "bg-gray-200 text-gray-800";
@@ -22,7 +24,7 @@ export function TaskCard({ task }: TaskCardProps) {
   };
 
   return (
-    <Card className="bg-gray-50 h-40  hover:bg-gray-100 transition-colors duration-200 border border-dashed shadow-sm rounded-none my-3">
+    <Card className="bg-gray-50 h-40 rounded-lg  hover:bg-gray-100 transition-colors duration-200 border border-dashed shadow-sm rounded-none my-3">
       <CardContent className="p-4">
         <div className="text-lg font-medium text-gray-800 mb-2">
           {task.title}

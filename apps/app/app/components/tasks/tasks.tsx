@@ -16,9 +16,11 @@ import { TaskWithDateStrings } from "../../lib/types";
 export function Tasks({
   tasks,
   projectId,
+  isLoading,
 }: {
   tasks: TaskWithDateStrings[];
   projectId: string;
+  isLoading: boolean;
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [updatingId, setUpdatingId] = useState("");
@@ -80,21 +82,24 @@ export function Tasks({
     <div className="p-8 min-h-screen">
       <div className="mx-auto">
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-auto">
             <TaskColumn
               column={{ id: "TODO", title: "Todo" }}
               tasks={getColumnTasks("TODO") || []}
               disabled={updatingId === "TODO"}
+              isLoading={isLoading}
             />
             <TaskColumn
               disabled={updatingId === "IN_PROGRESS"}
               column={{ id: "IN_PROGRESS", title: "In progress" }}
               tasks={getColumnTasks("IN_PROGRESS") || []}
+              isLoading={isLoading}
             />
             <TaskColumn
               column={{ id: "COMPLETED", title: "Completed" }}
               tasks={getColumnTasks("COMPLETED") || []}
               disabled={updatingId === "COMPLETED"}
+              isLoading={isLoading}
             />
           </div>
         </DragDropContext>

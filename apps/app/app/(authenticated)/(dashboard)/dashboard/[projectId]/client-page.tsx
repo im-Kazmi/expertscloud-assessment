@@ -21,7 +21,11 @@ export function ClientPage({ id }: Props) {
           <PlusCircle className="mr-2 h-4 w-4" /> Add Task
         </Button>
       </DashboardHeader>
-      <Tasks tasks={project?.tasks ?? []} projectId={id} />
+      <Tasks
+        tasks={project?.tasks ?? []}
+        projectId={id}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

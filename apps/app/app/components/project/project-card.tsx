@@ -1,11 +1,16 @@
 import { Organization, Project, Prisma } from "@prisma/client";
+import Link from "next/link";
 
 type Props = {
   project: Prisma.ProjectSelect;
 };
+
 export const ProjectCard = ({ project }: Props) => {
   return (
-    <div className="flex flex-col bg-muted/20  border border-dashed shadow-sm hover:shadow-none cursor-pointer rounded-xl dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70">
+    <Link
+      href={`/dashboard/${project.id}`}
+      className="flex flex-col bg-muted/20  border border-dashed shadow-sm hover:shadow-none cursor-pointer rounded-xl dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70"
+    >
       <div className="p-4 md:p-5">
         <h3 className="text-lg font-bold text-gray-800 dark:text-white">
           {project.name}
@@ -42,6 +47,6 @@ export const ProjectCard = ({ project }: Props) => {
           {/* Completed tasks: {project?.tasks && project.tasks?.length} */}
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
