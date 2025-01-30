@@ -6,7 +6,6 @@ import { useGetTasks, useUpdateTask } from "@repo/features/task";
 import { useMutation, useQueryClient } from "@repo/react-query";
 import { client } from "@repo/api/client";
 import { TaskColumn } from "./task-column";
-// import { NewTaskDialog } from "./new-task-dialog";
 import { KanbanState } from "../../lib/types";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@repo/design-system/components/ui/button";
@@ -22,7 +21,6 @@ export function Tasks({
   projectId: string;
   isLoading: boolean;
 }) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [updatingId, setUpdatingId] = useState("");
   const queryClient = useQueryClient();
 

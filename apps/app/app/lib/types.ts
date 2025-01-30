@@ -1,4 +1,5 @@
 import { Task, Prisma, Organization } from "@prisma/client";
+import { createTaskSchema, z } from "@repo/types";
 
 export interface Column {
   id: string;
@@ -23,3 +24,5 @@ export type TaskWithOrg = Omit<Task, "createdAt" | "updatedAt" | "dueDate"> & {
 } & {
   org: Omit<Organization, "id" | "createdAt" | "updatedAt">;
 };
+
+export type CreateTaskFormValues = z.infer<typeof createTaskSchema>;

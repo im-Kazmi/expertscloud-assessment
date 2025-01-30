@@ -13,22 +13,20 @@ export const createTaskSchema = z.object({
   }),
   description: z.string().optional(),
   status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED"]).optional(),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
   dueDate: z.string().optional(),
-  orgId: z.string(),
+  projectId: z.string(),
 });
 
 export const updateTaskSchema = z.object({
   title: z.string().min(2).optional(),
   description: z.string().optional(),
-  status: z.enum(["TODO", "IN_PROGRESS", "DONE"]).optional(),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
-  dueDate: z.string().optional(), // ISO date string
+  status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED"]).optional(),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
+  dueDate: z.string().optional(),
 });
 
-export const assignUserSchema = z.object({
-  userId: z.string(),
-});
+export const assignUserSchema = z.array(z.string());
 
 export const createProjectSchema = z.object({
   name: z.string().min(2, {

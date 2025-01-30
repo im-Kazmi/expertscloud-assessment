@@ -12,9 +12,8 @@ export const createTaskSchema = z.object({
   status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED"]).optional(),
   priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
   dueDate: z.string().optional(),
-  orgId: z.string(),
+  projectId: z.string(),
 });
-
 export const updateTaskSchema = z.object({
   title: z.string().min(2).optional(),
   description: z.string().optional(),
@@ -23,9 +22,7 @@ export const updateTaskSchema = z.object({
   dueDate: z.string().optional(),
 });
 
-export const assignUserSchema = z.object({
-  userId: z.string(),
-});
+export const assignUserSchema = z.array(z.string());
 
 const app = new Hono()
   .use(clerkMiddleware())
@@ -59,7 +56,41 @@ const app = new Hono()
 
     return c.json(tasks, 200);
   })
+  .post("/", zValidator("json", createTaskSchema), async (c) => {
+    const auth = getAuth(c);
 
+    console.log("creating task");
+    if (!auth?.userId) {
+      return c.json(
+        {
+          message: "You are not logged in.",
+        },
+        400,
+      );
+    }
+    console.log("userId exists");
+
+    if (!auth.orgId) {
+      return c.json(
+        {
+          message: "You are not a member of any organization.",
+        },
+        400,
+      );
+    }
+
+    console.log("there is no org exists");
+
+    const taskService = c.var.taskService;
+    const values = c.req.valid("json");
+
+    const task = await taskService.createTask({
+      ...values,
+    });
+    console.log("task created");
+
+    return c.json(task, 200);
+  })
   .get("/:id", zValidator("param", z.object({ id: z.string() })), async (c) => {
     const { id } = c.req.valid("param");
     const taskService = c.var.taskService;
@@ -74,37 +105,6 @@ const app = new Hono()
         404,
       );
     }
-
-    return c.json(task, 200);
-  })
-
-  .post("/", zValidator("json", createTaskSchema), async (c) => {
-    const auth = getAuth(c);
-
-    if (!auth?.userId) {
-      return c.json(
-        {
-          message: "You are not logged in.",
-        },
-        400,
-      );
-    }
-
-    if (!auth.orgId) {
-      return c.json(
-        {
-          message: "You are not a member of any organization.",
-        },
-        400,
-      );
-    }
-
-    const taskService = c.var.taskService;
-    const values = c.req.valid("json");
-
-    const task = await taskService.createTask({
-      ...values,
-    });
 
     return c.json(task, 200);
   })
@@ -168,10 +168,10 @@ const app = new Hono()
     }
 
     const { id } = c.req.param();
-    const { userId } = c.req.valid("json");
+    const userIds = c.req.valid("json");
     const taskService = c.var.taskService;
 
-    const task = await taskService.assignUserToTask(id, userId);
+    const task = await taskService.assignUserToTask(id, userIds);
 
     return c.json(task, 200);
   })
@@ -190,9 +190,9 @@ const app = new Hono()
 
     const { id } = c.req.param();
     const taskService = c.var.taskService;
-    const { userId } = c.req.valid("json");
+    const userIds = c.req.valid("json");
 
-    const task = await taskService.unassignUserFromTask(id, userId);
+    const task = await taskService.unassignUserFromTask(id, userIds);
 
     return c.json(task, 200);
   });

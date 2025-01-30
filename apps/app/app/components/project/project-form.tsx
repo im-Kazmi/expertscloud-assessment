@@ -33,7 +33,7 @@ export function ProjectForm({
   disabled,
 }: Props) {
   const form = useForm<CreateProjectFormValues>({
-    resolver: zodResolver(createProjectSchema),
+    // resolver: zodResolver(createProjectSchema),
     defaultValues: defaultValues,
   });
 

@@ -1,129 +1,48 @@
-// import { useForm, Controller } from "react-hook-form";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-// } from "@repo/design-system/components/ui/dialog";
-// import { Button } from "@repo/design-system/components/ui/button";
-// import { Input } from "@repo/design-system/components/ui/input";
-// import { Label } from "@repo/design-system/components/ui/label";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@repo/design-system/components/ui/select";
-// import { Task } from "@prisma/client";
+"use client";
+import { TaskForm } from "./task-form";
+import { CreateTaskFormValues } from "@/app/lib/types";
+import { useCreateTaskDialog } from "@/app/store/use-create-task-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@repo/design-system/components/ui/dialog";
+import { useCreateTask } from "@repo/features/task";
 
-// interface NewTaskDialogProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-//   onAddTask: (
-//     task: Omit<Task, "id" | "createdAt" | "updatedAt">,
-//   ) => Promise<void>;
-// }
+export function NewTaskDialog() {
+  const { isOpen, onClose, projectId } = useCreateTaskDialog();
 
-// export function NewTaskDialog({
-//   isOpen,
-//   onClose,
-//   onAddTask,
-// }: NewTaskDialogProps) {
-//   const { control, handleSubmit, reset } =
-//     useForm<Omit<Task, "id" | "createdAt" | "updatedAt">>();
+  const mutation = useCreateTask();
 
-//   const onSubmit = async (
-//     data: Omit<Task, "id" | "createdAt" | "updatedAt">,
-//   ) => {
-//     await onAddTask(data);
-//     reset();
-//     onClose();
-//   };
+  const onSubmit = (data: CreateTaskFormValues) => {
+    mutation.mutate(
+      {
+        ...data,
+        projectId: projectId!,
+      },
+      {
+        onSuccess: (data, vars) => {},
+        onError: () => {},
+        onSettled: () => {},
+      },
+    );
+  };
 
-//   return (
-//     <Dialog open={isOpen} onOpenChange={onClose}>
-//       <DialogContent className="sm:max-w-[425px]">
-//         <DialogHeader>
-//           <DialogTitle>Add New Task</DialogTitle>
-//         </DialogHeader>
-//         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-//           <div className="space-y-2">
-//             <Label htmlFor="title">Title</Label>
-//             <Controller
-//               name="title"
-//               control={control}
-//               rules={{ required: true }}
-//               render={({ field }) => <Input id="title" {...field} />}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <Label htmlFor="description">Description</Label>
-//             <Controller
-//               name="description"
-//               control={control}
-//               render={({ field }) => <Input id="description" {...field} />}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <Label htmlFor="status">Status</Label>
-//             <Controller
-//               name="status"
-//               control={control}
-//               rules={{ required: true }}
-//               render={({ field }) => (
-//                 <Select
-//                   onValueChange={field.onChange}
-//                   defaultValue={field.value}
-//                 >
-//                   <SelectTrigger>
-//                     <SelectValue placeholder="Select status" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="TODO">To Do</SelectItem>
-//                     <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-//                     <SelectItem value="DONE">Done</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               )}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <Label htmlFor="priority">Priority</Label>
-//             <Controller
-//               name="priority"
-//               control={control}
-//               rules={{ required: true }}
-//               render={({ field }) => (
-//                 <Select
-//                   onValueChange={field.onChange}
-//                   defaultValue={field.value}
-//                 >
-//                   <SelectTrigger>
-//                     <SelectValue placeholder="Select priority" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     <SelectItem value="LOW">Low</SelectItem>
-//                     <SelectItem value="MEDIUM">Medium</SelectItem>
-//                     <SelectItem value="HIGH">High</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               )}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <Label htmlFor="dueDate">Due Date</Label>
-//             <Controller
-//               name="dueDate"
-//               control={control}
-//               render={({ field }) => (
-//                 <Input id="dueDate" type="date" {...field} />
-//               )}
-//             />
-//           </div>
-//           <Button type="submit">Add Task</Button>
-//         </form>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// }
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <div className="overflow-y-auto">
+        <DialogContent className="max-h-[min(640px,80vh)] overflow-y-auto ">
+          <DialogHeader>
+            <DialogTitle>Add New Task</DialogTitle>
+          </DialogHeader>
+          <TaskForm
+            onSubmit={onSubmit}
+            onDelete={() => {}}
+            disabled={mutation.isPending}
+          />
+        </DialogContent>
+      </div>
+    </Dialog>
+  );
+}
