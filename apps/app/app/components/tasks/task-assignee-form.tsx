@@ -11,8 +11,9 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { AssigneesMultiSelector } from "./assignees-multi-select";
 import { useCreateTaskDialog } from "@/app/store/use-create-task-dialog";
 import { NewTaskDialogView } from "@/app/lib/types";
-import { useAssignTask } from "@repo/features/task";
+import { useAssignTask, useGetTaskAssignees } from "@repo/features/task";
 import { useQueryClient } from "@repo/react-query";
+import { DialogFooter } from "@repo/design-system/components/ui/dialog";
 
 const schema = z.object({
   assignees: assignUserSchema,
@@ -48,6 +49,8 @@ export function TaskAssigneeForm({
 
   const mutation = useAssignTask(taskId!);
 
+  const { data: taskAssignees } = useGetTaskAssignees(taskId!);
+
   const onSubmit = (data: FormData) => {
     mutation.mutate(data.assignees, {
       onSuccess: () => {
@@ -62,18 +65,19 @@ export function TaskAssigneeForm({
       <div className="space-y-2 z-[100] w-full">
         <AssigneesMultiSelector
           onChange={(values) => setValue("assignees", values)}
+          defaultValues={taskAssignees}
         />
 
         {errors.assignees && (
           <p className="text-red-500 text-sm">{errors.assignees.message}</p>
         )}
       </div>
-      <div className="w-full flex justify-end">
-        <Button disabled={disabled} type="submit">
+      <DialogFooter className="">
+        <Button disabled={mutation.isPending || disabled} type="submit">
           Submit
         </Button>
         <Button
-          disabled={disabled}
+          disabled={mutation.isPending || disabled}
           onClick={() => {
             onClose?.();
             setView?.(NewTaskDialogView.FORM);
@@ -81,7 +85,7 @@ export function TaskAssigneeForm({
         >
           cancel
         </Button>
-      </div>
+      </DialogFooter>
     </form>
   );
 }

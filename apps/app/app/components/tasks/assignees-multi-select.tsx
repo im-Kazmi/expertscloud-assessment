@@ -3,6 +3,7 @@ import { useOrganization } from "@repo/auth/client";
 import { useState, useEffect, useId } from "react";
 import MultipleSelector from "@repo/design-system/components/ui/multiselect";
 import { assignUserSchema } from "@repo/types";
+import { useGetTaskAssignees } from "@repo/features/task";
 
 type User = {
   id: string;
@@ -16,8 +17,10 @@ type User = {
 
 export function AssigneesMultiSelector({
   onChange,
+  defaultValues,
 }: {
   onChange: (userIds: string[]) => void;
+  defaultValues?: { label: string; value: string }[];
 }) {
   const id = useId();
   const [users, setUsers] = useState<User[]>([]);
@@ -87,6 +90,7 @@ export function AssigneesMultiSelector({
           label: user.label,
           value: user.value,
         }))}
+        value={defaultValues ?? undefined}
         onChange={(opts) => onChange(opts.map((opt) => opt.value))}
         placeholder="Select Assignees"
         hideClearAllButton

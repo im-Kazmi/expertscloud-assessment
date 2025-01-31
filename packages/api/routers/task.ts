@@ -192,9 +192,32 @@ const app = new Hono()
     const taskService = c.var.taskService;
     const userIds = c.req.valid("json");
 
-    const task = await taskService.unassignUserFromTask(id, userIds);
+    const task = await taskService.manageTaskAssignees(id, userIds);
 
     return c.json(task, 200);
-  });
+  })
+  .get(
+    "/:id/assignees",
+    zValidator("param", z.object({ id: z.string() })),
+    async (c) => {
+      const auth = getAuth(c);
+
+      if (!auth?.userId) {
+        return c.json(
+          {
+            message: "You are not logged in.",
+          },
+          400,
+        );
+      }
+
+      const { id } = c.req.param();
+      const taskService = c.var.taskService;
+
+      const assignees = await taskService.getTaskAssigneeIds(id);
+
+      return c.json(assignees, 200);
+    },
+  );
 
 export default app;
