@@ -49,9 +49,8 @@ export function TaskAssigneeForm({
 
   const mutation = useAssignTask(taskId!);
 
-  const { data: taskAssignees } = useGetTaskAssignees(taskId!);
+  const { data: taskAssignees, isLoading } = useGetTaskAssignees(taskId!);
 
-  console.log(taskAssignees);
   const onSubmit = (data: FormData) => {
     mutation.mutate(data.assignees, {
       onSuccess: () => {
@@ -70,6 +69,7 @@ export function TaskAssigneeForm({
         <AssigneesMultiSelector
           onChange={(values) => setValue("assignees", values)}
           defaultValues={taskAssignees}
+          disabled={isLoading}
         />
 
         {errors.assignees && (

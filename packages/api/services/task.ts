@@ -43,7 +43,12 @@ export class TaskService extends BaseService {
 
       const updatedTask = await prisma.task.update({
         where: { id },
-        data: values,
+        data: {
+          ...values,
+          ...(values.dueDate && {
+            dueDate: new Date(values?.dueDate as string),
+          }),
+        },
       });
       return updatedTask;
     } catch (error) {
@@ -92,41 +97,12 @@ export class TaskService extends BaseService {
     }
   }
 
-  async assignUserToTask(taskId: string, userIds: string[]) {
-    try {
-      const task = await this.getTaskById(taskId);
-      if (!task) {
-        throw new Error(`Task does not exist with this ID.`);
-      }
-
-      const assignees = await prisma.taskAssignee.createMany({
-        data: userIds.map((id) => ({
-          taskId: task.id,
-          userId: id,
-        })),
-      });
-      return assignees;
-    } catch (error) {
-      throw new Error(
-        `Error assigning user to task: ${(error as Error).message}`,
-      );
-    }
-  }
-
   async manageTaskAssignees(taskId: string, userIds: string[]) {
     try {
       const task = await this.getTaskById(taskId);
-      if (!task) {
-        throw new Error(`Task does not exist with this ID.`);
-      }
 
       const existingAssignees = await prisma.taskAssignee.findMany({
-        where: {
-          taskId: task.id,
-          userId: {
-            in: userIds,
-          },
-        },
+        where: { taskId: taskId },
       });
 
       const existingUserIds = existingAssignees.map(
@@ -137,34 +113,30 @@ export class TaskService extends BaseService {
         (userId) => !existingUserIds.includes(userId),
       );
 
-      const usersToUnassign = userIds.filter((userId) =>
-        existingUserIds.includes(userId),
+      const usersToUnassign = existingUserIds.filter(
+        (userId) => !userIds.includes(userId),
       );
 
       if (usersToAssign.length > 0) {
         await prisma.taskAssignee.createMany({
           data: usersToAssign.map((userId) => ({
-            taskId: task.id,
+            taskId: task?.id!,
             userId,
           })),
+          skipDuplicates: true,
         });
       }
 
       if (usersToUnassign.length > 0) {
         await prisma.taskAssignee.deleteMany({
           where: {
-            taskId: task.id,
-            userId: {
-              in: usersToUnassign,
-            },
+            taskId: task?.id,
+            userId: { in: usersToUnassign },
           },
         });
       }
 
-      return {
-        assigned: usersToAssign,
-        unassigned: usersToUnassign,
-      };
+      return { assigned: usersToAssign, unassigned: usersToUnassign };
     } catch (error) {
       throw new Error(
         `Error managing task assignees: ${(error as Error).message}`,

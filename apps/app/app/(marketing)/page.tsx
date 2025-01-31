@@ -3,7 +3,7 @@
 import { Button } from "@repo/design-system/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
-
+import { SignedIn, SignedOut, UserButton } from "@repo/auth/client";
 export default function Page() {
   return (
     <div className="">
@@ -14,17 +14,27 @@ export default function Page() {
         >
           <div className="flex lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+              <span className="sr-only">expertscloud</span>
               <img alt="logo" src="../icon.png" className="size-8" />
             </a>
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <Link
-              href="/sign-in"
-              className="text-sm/6 font-semibold text-gray-900"
-            >
-              Log in <span aria-hidden="true">&rarr;</span>
-            </Link>
+            <div className="flex gap-x-3">
+              <SignedIn>
+                <Button className=" bg-gradient-to-r from-green-300 to-teal-400">
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+                <UserButton />
+              </SignedIn>
+              <SignedOut>
+                <Link
+                  href="/sign-in"
+                  className="text-sm/6 font-semibold text-gray-900"
+                >
+                  Log in <span aria-hidden="true">&rarr;</span>
+                </Link>
+              </SignedOut>
+            </div>
           </div>
         </nav>
       </header>

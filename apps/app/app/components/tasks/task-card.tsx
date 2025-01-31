@@ -10,6 +10,7 @@ import { useCreateAssigneesDialog } from "@/app/store/use-create-assignees-dialo
 import { useConfirm } from "@/app/hooks/use-confirm";
 import { useDeleteTask } from "@repo/features/task";
 import { useQueryClient } from "@repo/react-query";
+import { useUpdateTaskDialog } from "@/app/store/use-update-task-dialog";
 
 type TaskCardProps = {
   task: TaskWithDetails;
@@ -20,6 +21,7 @@ export function TaskCard({ task, taskAssignedToUser }: TaskCardProps) {
   const queryClient = useQueryClient();
 
   const { onOpen } = useCreateAssigneesDialog();
+  const { onOpen: OnOpenTaskUpdateDialog } = useUpdateTaskDialog();
 
   const [ConfirmationDialog, confirm] = useConfirm({
     title: "Are you sure?",
@@ -29,6 +31,11 @@ export function TaskCard({ task, taskAssignedToUser }: TaskCardProps) {
   const deleteMutation = useDeleteTask(task.id!);
 
   const onEditClick = (e: React.FormEvent) => {
+    e.stopPropagation();
+    OnOpenTaskUpdateDialog(task.id);
+  };
+
+  const onAddAssigneeClick = (e: React.FormEvent) => {
     e.stopPropagation();
     onOpen(task.id);
   };
@@ -97,11 +104,21 @@ export function TaskCard({ task, taskAssignedToUser }: TaskCardProps) {
         <div className="bg-neutral-300/20 min-h-10 z-50 border-t rounded-b-xl py-3 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700 flex gap-x-5 justify-between">
           <div className="mt-1 text-sm text-gray-500 dark:text-neutral-500">
             {!task?.assignees.length && (
-              <h1 className="size-fit">No Assignee</h1>
+              <h1
+                className="size-fit  hover:border-bottom cursor-pointer"
+                onClick={onAddAssigneeClick}
+              >
+                Add Assignees
+              </h1>
             )}
             {task?.assignees &&
               task?.assignees?.slice(0, 3).map((assignee) => (
-                <Button variant={"secondary"} size={"sm"} className="size-fit">
+                <Button
+                  key={assignee?.user.clerkId}
+                  variant={"secondary"}
+                  size={"sm"}
+                  className="size-fit"
+                >
                   {assignee?.user.name}
                 </Button>
               ))}

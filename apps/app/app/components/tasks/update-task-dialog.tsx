@@ -22,7 +22,8 @@ export function UpdateTaksDialog() {
   const updateMutation = useUpdateTask();
   const deleteMutation = useDeleteTask(taskId!);
 
-  const { data } = useGetTaske(taskId!);
+  const { data, isLoading } = useGetTaske(taskId!);
+
   const onSubmit = (data: UpdateTaskFormValues) => {
     updateMutation.mutate(
       {
@@ -37,7 +38,8 @@ export function UpdateTaksDialog() {
     );
   };
 
-  const isPending = updateMutation.isPending || deleteMutation.isPending;
+  const isPending =
+    updateMutation.isPending || deleteMutation.isPending || isLoading;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -58,6 +60,7 @@ export function UpdateTaksDialog() {
               description: data?.description!,
               dueDate: data?.dueDate!,
             }}
+            id={data?.id ?? undefined}
           />
         </DialogContent>
       </div>

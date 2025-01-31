@@ -11,16 +11,31 @@ export class ProjectService extends BaseService {
             createMany: {
               data: [
                 {
-                  title: "Hire kazmi",
-                  description: "Hire kazmi directly",
-                  priority: "CRITICAL",
+                  title: "Define project scope",
+                  description:
+                    "Outline the goals, deliverables, and timeline of the project.",
+                  priority: "HIGH",
                   status: "TODO",
                 },
                 {
-                  title: "Hire kazmi",
-                  description: "Hire kazmi directly",
+                  title: "Assign team members",
+                  description:
+                    "Identify and allocate resources for the project.",
+                  priority: "MEDIUM",
+                  status: "TODO",
+                },
+                {
+                  title: "Set project milestones",
+                  description: "Establish key deadlines and check-ins.",
+                  priority: "HIGH",
+                  status: "TODO",
+                },
+                {
+                  title: "Kickoff meeting",
+                  description:
+                    "Organize an initial meeting with stakeholders and team members.",
                   priority: "CRITICAL",
-                  status: "COMPLETED",
+                  status: "IN_PROGRESS",
                 },
               ],
             },

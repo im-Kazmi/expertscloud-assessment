@@ -19,7 +19,7 @@ export const updateTaskSchema = z.object({
   description: z.string().optional(),
   status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED"]).optional(),
   priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
-  dueDate: z.string().optional(),
+  dueDate: z.any().optional(),
 });
 
 export const assignUserSchema = z.array(z.string());
@@ -171,31 +171,11 @@ const app = new Hono()
     const userIds = c.req.valid("json");
     const taskService = c.var.taskService;
 
-    const task = await taskService.assignUserToTask(id, userIds);
-
-    return c.json(task, 200);
-  })
-
-  .post("/:id/unassign", zValidator("json", assignUserSchema), async (c) => {
-    const auth = getAuth(c);
-
-    if (!auth?.userId) {
-      return c.json(
-        {
-          message: "You are not logged in.",
-        },
-        400,
-      );
-    }
-
-    const { id } = c.req.param();
-    const taskService = c.var.taskService;
-    const userIds = c.req.valid("json");
-
     const task = await taskService.manageTaskAssignees(id, userIds);
 
     return c.json(task, 200);
   })
+
   .get(
     "/:id/assignees",
     zValidator("param", z.object({ id: z.string() })),

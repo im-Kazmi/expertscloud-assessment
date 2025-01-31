@@ -73,7 +73,7 @@ export function Tasks({
 
     const havePermissions = has({ role: "org:admin" });
 
-    if (!isUserAssignedTask || !havePermissions) {
+    if (!isUserAssignedTask && !havePermissions) {
       setUpdatingId("");
       return toast("I am really sorry!", {
         description:

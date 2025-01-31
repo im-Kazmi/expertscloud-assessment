@@ -18,9 +18,11 @@ type User = {
 export function AssigneesMultiSelector({
   onChange,
   defaultValues,
+  disabled = false,
 }: {
   onChange: (userIds: string[]) => void;
   defaultValues?: { label: string; value: string }[];
+  disabled?: boolean;
 }) {
   const id = useId();
   const [users, setUsers] = useState<User[]>([]);
@@ -96,6 +98,7 @@ export function AssigneesMultiSelector({
         hideClearAllButton
         hidePlaceholderWhenSelected
         emptyIndicator={<p className="text-center text-sm">No results found</p>}
+        disabled={disabled}
       />
     </div>
   );
