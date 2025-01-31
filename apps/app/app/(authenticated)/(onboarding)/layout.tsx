@@ -13,4 +13,4 @@ const OnBoardingLayout = ({ children }: Props) => {
   );
 };
 
-export default AppLayout;
+export default OnBoardingLayout;
