@@ -28,7 +28,13 @@ const AppLayout = ({ children }: AppLayoutProperties) => {
 
   return (
     <div className="p-10 flex min-h-[100vh]  flex-1 flex-col gap-4 bg-muted/50 ">
-      <OrganizationSwitcher />
+      <OrganizationSwitcher
+        afterLeaveOrganizationUrl="/dashboard"
+        afterCreateOrganizationUrl={"/dashboard"}
+        afterSelectPersonalUrl={"/dashboard"}
+        afterSwitchOrganizationUrl="/dashboard"
+        afterSelectOrganizationUrl={"/dashboard"}
+      />
       <div className=" flex-1  rounded-xl md:min-h-min p-5">{children}</div>
     </div>
   );
