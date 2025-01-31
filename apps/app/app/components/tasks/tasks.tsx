@@ -16,6 +16,7 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { Task } from "@prisma/client";
 import { TaskWithDetails } from "../../lib/types";
 import { useUser } from "@repo/auth/client";
+import { toast } from "sonner";
 
 export function Tasks({
   tasks,
@@ -26,6 +27,8 @@ export function Tasks({
   projectId: string;
   isLoading: boolean;
 }) {
+  const { user } = useUser();
+
   const [updatingId, setUpdatingId] = useState("");
   const queryClient = useQueryClient();
 
@@ -34,14 +37,16 @@ export function Tasks({
     [tasks],
   );
 
+  const taskAssignedToUser = useMemo(
+    () =>
+      tasks
+        .filter((task) =>
+          task.assignees.find((assignee) => assignee.user.clerkId === user?.id),
+        )
+        .map((t) => t.id),
+    [tasks],
+  );
   const updateMutation = useUpdateTaskStatus(projectId);
-
-  const addTask = async (
-    newTask: Omit<Task, "id" | "createdAt" | "updatedAt">,
-  ) => {
-    //   await addTaskMutation.mutateAsync(newTask);
-    //   setIsDialogOpen(false);
-  };
 
   const onDragEnd = async (result: any) => {
     const { destination, source, draggableId } = result;
@@ -59,6 +64,19 @@ export function Tasks({
 
     const newStatus = destination.droppableId as Task["status"];
     setUpdatingId(newStatus);
+
+    const isUserAssignedTask = taskAssignedToUser.includes(draggableId);
+
+    if (!isUserAssignedTask) {
+      setUpdatingId("");
+      return toast("I am really sorry!", {
+        description: "You can only update the tasks assigned to you.!",
+        action: {
+          label: "Apologize",
+          onClick: () => console.log("Thank you."),
+        },
+      });
+    }
     await updateMutation.mutateAsync(
       {
         id: draggableId,
@@ -73,37 +91,22 @@ export function Tasks({
     );
   };
 
-  // if (isLoading) {
-  //   return <div>Loading tasks...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>Error loading tasks: {error.message}</div>;
-  // }
-
   return (
     <div className="p-8 min-h-screen">
       <div className="mx-auto">
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-auto">
-            <TaskColumn
-              column={{ id: "TODO", title: "Todo" }}
-              tasks={getColumnTasks("TODO") || []}
-              disabled={updatingId === "TODO"}
-              isLoading={isLoading}
-            />
-            <TaskColumn
-              disabled={updatingId === "IN_PROGRESS"}
-              column={{ id: "IN_PROGRESS", title: "In progress" }}
-              tasks={getColumnTasks("IN_PROGRESS") || []}
-              isLoading={isLoading}
-            />
-            <TaskColumn
-              column={{ id: "COMPLETED", title: "Completed" }}
-              tasks={getColumnTasks("COMPLETED") || []}
-              disabled={updatingId === "COMPLETED"}
-              isLoading={isLoading}
-            />
+            {["TODO", "IN_PROGRESS", "COMPLETED"].map((item, i) => (
+              <TaskColumn
+                column={{
+                  id: item,
+                  title: item[0] + item.slice(1).toLowerCase(),
+                }}
+                tasks={getColumnTasks(item) || []}
+                disabled={updatingId === item}
+                isLoading={isLoading}
+              />
+            ))}
           </div>
         </DragDropContext>
       </div>
