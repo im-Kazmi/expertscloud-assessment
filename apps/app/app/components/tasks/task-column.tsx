@@ -5,12 +5,14 @@ import { ScrollArea } from "@repo/design-system/components/ui/scroll-area";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Column } from "@/app/lib/types";
 import { Loader } from "../shared/loader";
-import type { TaskWithDateStrings } from "@/app/lib/types";
+import type { TaskWithDetails } from "@/app/lib/types";
 import { TaskCardSkeleton } from "../skeletons/task-card-skeleton";
+import { useUser } from "@repo/auth/client";
+import { useMemo } from "react";
 
 type TaskColumnProps = {
   column: Column;
-  tasks: TaskWithDateStrings[];
+  tasks: TaskWithDetails[];
   disabled?: boolean;
   isLoading: boolean;
 };
@@ -21,6 +23,20 @@ export function TaskColumn({
   disabled,
   isLoading,
 }: TaskColumnProps) {
+  const { user } = useUser();
+
+  const taskAssignedToUser = useMemo(
+    () =>
+      tasks
+        .filter((task: any) =>
+          task.assignees.find(
+            (assignee: any) => assignee.user.clerkId === user?.id,
+          ),
+        )
+        .map((t) => t.id),
+    [tasks],
+  );
+
   return (
     <div
       className={cn(
@@ -69,7 +85,10 @@ export function TaskColumn({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <TaskCard task={task as any} />
+                        <TaskCard
+                          task={task as any}
+                          taskAssignedToUser={taskAssignedToUser}
+                        />
                       </div>
                     )}
                   </Draggable>

@@ -1,9 +1,14 @@
 import { Task, Prisma, Organization } from "@prisma/client";
-import { createTaskSchema, z } from "@repo/types";
+import { createTaskSchema, z, updateTaskSchema } from "@repo/types";
 
 export interface Column {
   id: string;
   title: string;
+}
+
+export enum NewTaskDialogView {
+  FORM = "FORM",
+  ASSIGNEES = "ASSIGNEES",
 }
 
 export interface KanbanState {
@@ -26,3 +31,29 @@ export type TaskWithOrg = Omit<Task, "createdAt" | "updatedAt" | "dueDate"> & {
 };
 
 export type CreateTaskFormValues = z.infer<typeof createTaskSchema>;
+export type UpdateTaskFormValues = z.infer<typeof updateTaskSchema>;
+
+export type ProjectWithDetails = Prisma.ProjectGetPayload<{
+  include: {
+    org: true;
+    tasks: {
+      include: {
+        assignees: {
+          include: {
+            user: true;
+          };
+        };
+      };
+    };
+  };
+}>;
+
+export type TaskWithDetails = Prisma.TaskGetPayload<{
+  include: {
+    assignees: {
+      include: {
+        user: true;
+      };
+    };
+  };
+}>;

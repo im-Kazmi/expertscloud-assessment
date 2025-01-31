@@ -2,7 +2,11 @@
 
 import { useState, useMemo } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import { useGetTasks, useUpdateTask } from "@repo/features/task";
+import {
+  useGetTasks,
+  useUpdateTask,
+  useUpdateTaskStatus,
+} from "@repo/features/task";
 import { useMutation, useQueryClient } from "@repo/react-query";
 import { client } from "@repo/api/client";
 import { TaskColumn } from "./task-column";
@@ -10,14 +14,15 @@ import { KanbanState } from "../../lib/types";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Task } from "@prisma/client";
-import { TaskWithDateStrings } from "../../lib/types";
+import { TaskWithDetails } from "../../lib/types";
+import { useUser } from "@repo/auth/client";
 
 export function Tasks({
   tasks,
   projectId,
   isLoading,
 }: {
-  tasks: TaskWithDateStrings[];
+  tasks: TaskWithDetails[];
   projectId: string;
   isLoading: boolean;
 }) {
@@ -29,7 +34,7 @@ export function Tasks({
     [tasks],
   );
 
-  const updateMutation = useUpdateTask(projectId);
+  const updateMutation = useUpdateTaskStatus(projectId);
 
   const addTask = async (
     newTask: Omit<Task, "id" | "createdAt" | "updatedAt">,

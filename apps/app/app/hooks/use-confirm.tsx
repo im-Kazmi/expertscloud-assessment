@@ -1,4 +1,4 @@
-import { Button } from "../components/ui/button";
+import { Button } from "@repo/design-system/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -8,12 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../components/ui/dialog";
+} from "@repo/design-system/components/ui/dialog";
 import { useState } from "react";
 import React from "react";
-import { Label } from "../components/ui/label";
-import { Input } from "../components/ui/input";
-import { CircleAlert } from "../icons";
+import { Label } from "@repo/design-system/components/ui/label";
+import { Input } from "@repo/design-system/components/ui/input";
 
 export const useConfirm = ({
   title,

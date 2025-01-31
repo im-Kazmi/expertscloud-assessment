@@ -1,8 +1,8 @@
-import { Organization, Project, Prisma } from "@prisma/client";
+import { ProjectWithDetails } from "@/app/lib/types";
 import Link from "next/link";
 
 type Props = {
-  project: Prisma.ProjectSelect;
+  project: ProjectWithDetails;
 };
 
 export const ProjectCard = ({ project }: Props) => {
@@ -41,10 +41,10 @@ export const ProjectCard = ({ project }: Props) => {
       </div>
       <div className="bg-muted border-t rounded-b-xl py-3 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700 flex gap-x-5">
         <p className="mt-1 text-sm text-gray-500 dark:text-neutral-500">
-          {/* Total tasks: {project?.tasks && project.tasks?.length} */}
+          Total tasks: {project?.tasks && project.tasks?.length}
         </p>
         <p className="mt-1 text-sm text-gray-500 dark:text-neutral-500">
-          {/* Completed tasks: {project?.tasks && project.tasks?.length} */}
+          Completed tasks: {project?.tasks && project.tasks?.length}
         </p>
       </div>
     </Link>

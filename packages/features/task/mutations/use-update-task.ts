@@ -12,7 +12,7 @@ type RequestType = InferRequestType<
   id: string;
 };
 
-export const useUpdateTask = (projectId: string) => {
+export const useUpdateTask = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
@@ -43,45 +43,6 @@ export const useUpdateTask = (projectId: string) => {
 
       const data = await res.json();
       return data;
-    },
-    onMutate: async (newTask: any) => {
-      await queryClient.cancelQueries({
-        queryKey: ["projects", { id: projectId }],
-      });
-
-      const previousProject: any = queryClient.getQueryData<ResponseType>([
-        "projects",
-        { id: projectId },
-      ]);
-
-      if (previousProject) {
-        const updatedTasks = previousProject.tasks.map((task: any) =>
-          task.id === newTask.id ? { ...task, ...newTask } : task,
-        );
-
-        queryClient.setQueryData<ResponseType>(
-          ["projects", { id: projectId }],
-          {
-            ...previousProject,
-            tasks: updatedTasks,
-          },
-        );
-      }
-
-      return { previousProject };
-    },
-    onError: (err: any, newTask: any, context: any) => {
-      if (context?.previousProject) {
-        queryClient.setQueryData<ResponseType>(
-          ["projects", { id: projectId }],
-          context.previousProject,
-        );
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["projects", { id: projectId }],
-      });
     },
   });
 

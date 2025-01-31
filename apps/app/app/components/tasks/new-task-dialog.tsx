@@ -15,22 +15,19 @@ import { useState } from "react";
 import { AssigneesMultiSelector } from "./assignees-multi-select";
 import { Button } from "@repo/design-system/components/ui/button";
 import { TaskAssigneeForm } from "./task-assignee-form";
-
-enum NewTaskDialogView {
-  FORM = "FORM",
-  ASSIGNEES = "ASSIGNEES",
-}
+import { NewTaskDialogView } from "@/app/lib/types";
 
 export function NewTaskDialog() {
-  const { isOpen, onClose, projectId } = useCreateTaskDialog();
+  const { isOpen, onClose, projectId, setTaskId, taskId } =
+    useCreateTaskDialog();
 
   const [view, setView] = useState<NewTaskDialogView>(NewTaskDialogView.FORM);
 
   const queryClient = useQueryClient();
-  const mutation = useCreateTask();
+  const createMutation = useCreateTask();
 
   const onSubmit = (data: CreateTaskFormValues) => {
-    mutation.mutate(
+    createMutation.mutate(
       {
         ...data,
         projectId: projectId!,
@@ -38,8 +35,9 @@ export function NewTaskDialog() {
       {
         onSuccess: (data, vars) => {
           queryClient.invalidateQueries({
-            queryKey: ["projects", { projectId }],
+            queryKey: ["projects", { id: projectId }],
           });
+          setTaskId(data.id);
           setView(NewTaskDialogView.ASSIGNEES);
         },
       },
@@ -47,7 +45,13 @@ export function NewTaskDialog() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={() => {
+        onClose();
+        setView(NewTaskDialogView.FORM);
+      }}
+    >
       <div className="overflow-y-auto">
         <DialogContent className="max-h-[min(640px,80vh)] flex flex-col items-start w-full overflow-y-auto ">
           {view === NewTaskDialogView.FORM && (
@@ -58,7 +62,15 @@ export function NewTaskDialog() {
               <TaskForm
                 onSubmit={onSubmit}
                 onDelete={() => {}}
-                disabled={mutation.isPending}
+                defaultValues={{
+                  title: "",
+                  description: "",
+                  status: "TODO",
+                  priority: "MEDIUM",
+                  dueDate: "",
+                  projectId: "",
+                }}
+                disabled={createMutation.isPending}
               />
             </>
           )}
@@ -67,7 +79,12 @@ export function NewTaskDialog() {
               <DialogHeader>
                 <DialogTitle>Add Assignees</DialogTitle>
               </DialogHeader>
-              <TaskAssigneeForm />
+              <TaskAssigneeForm
+                disabled={createMutation.isPending}
+                setView={setView}
+                taskId={taskId}
+                onClose={onClose}
+              />
             </>
           )}
         </DialogContent>

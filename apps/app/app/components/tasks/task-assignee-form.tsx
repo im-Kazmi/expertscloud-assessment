@@ -9,6 +9,10 @@ import MultipleSelector from "@repo/design-system/components/ui/multiselect";
 import { assignUserSchema } from "@repo/types";
 import { Button } from "@repo/design-system/components/ui/button";
 import { AssigneesMultiSelector } from "./assignees-multi-select";
+import { useCreateTaskDialog } from "@/app/store/use-create-task-dialog";
+import { NewTaskDialogView } from "@/app/lib/types";
+import { useAssignTask } from "@repo/features/task";
+import { useQueryClient } from "@repo/react-query";
 
 const schema = z.object({
   assignees: assignUserSchema,
@@ -16,9 +20,21 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function TaskAssigneeForm() {
+type Props = {
+  setView?: (view: NewTaskDialogView) => void;
+  disabled?: boolean;
+  taskId?: string;
+  onClose?: () => void;
+};
+
+export function TaskAssigneeForm({
+  setView,
+  disabled = false,
+  taskId,
+  onClose,
+}: Props) {
   const id = useId();
-  const { organization } = useOrganization();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -30,8 +46,15 @@ export function TaskAssigneeForm() {
     defaultValues: { assignees: [] },
   });
 
+  const mutation = useAssignTask(taskId!);
+
   const onSubmit = (data: FormData) => {
-    console.log("Selected Assignees:", data.assignees);
+    mutation.mutate(data.assignees, {
+      onSuccess: () => {
+        onClose?.();
+        queryClient.refetchQueries();
+      },
+    });
   };
 
   return (
@@ -45,12 +68,20 @@ export function TaskAssigneeForm() {
           <p className="text-red-500 text-sm">{errors.assignees.message}</p>
         )}
       </div>
-      <Button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        Submit
-      </Button>
+      <div className="w-full flex justify-end">
+        <Button disabled={disabled} type="submit">
+          Submit
+        </Button>
+        <Button
+          disabled={disabled}
+          onClick={() => {
+            onClose?.();
+            setView?.(NewTaskDialogView.FORM);
+          }}
+        >
+          cancel
+        </Button>
+      </div>
     </form>
   );
 }
