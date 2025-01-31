@@ -5,6 +5,7 @@ import { useGetProjects } from "@repo/features/project";
 import { ProjectCard } from "@/app/components/project/project-card";
 import { ScrollArea } from "@repo/design-system/components/ui/scroll-area";
 import ProjectCardSkeleton from "@/app/components/skeletons/project-card-skeleton";
+import { EmptyProjectState } from "@/app/components/project/empty-project-state";
 
 export default function Page() {
   const { data: projects, isLoading } = useGetProjects();
@@ -28,6 +29,8 @@ export default function Page() {
               projects.map((project) => (
                 <ProjectCard key={project.id} project={project as any} />
               ))}
+
+            {!isLoading && !projects?.length && <EmptyProjectState />}
           </div>
         </ScrollArea>
       </div>
