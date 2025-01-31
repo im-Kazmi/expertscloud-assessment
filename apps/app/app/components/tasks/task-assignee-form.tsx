@@ -51,17 +51,21 @@ export function TaskAssigneeForm({
 
   const { data: taskAssignees } = useGetTaskAssignees(taskId!);
 
+  console.log(taskAssignees);
   const onSubmit = (data: FormData) => {
     mutation.mutate(data.assignees, {
       onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["tasks", { taskId }, "assignees"],
+        });
+        queryClient.cancelQueries();
         onClose?.();
-        queryClient.refetchQueries();
       },
     });
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
       <div className="space-y-2 z-[100] w-full">
         <AssigneesMultiSelector
           onChange={(values) => setValue("assignees", values)}
@@ -72,11 +76,12 @@ export function TaskAssigneeForm({
           <p className="text-red-500 text-sm">{errors.assignees.message}</p>
         )}
       </div>
-      <DialogFooter className="">
+      <DialogFooter className=" ">
         <Button disabled={mutation.isPending || disabled} type="submit">
           Submit
         </Button>
         <Button
+          variant="outline"
           disabled={mutation.isPending || disabled}
           onClick={() => {
             onClose?.();

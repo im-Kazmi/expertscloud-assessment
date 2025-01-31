@@ -15,7 +15,7 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Task } from "@prisma/client";
 import { TaskWithDetails } from "../../lib/types";
-import { useUser } from "@repo/auth/client";
+import { useAuth, useUser } from "@repo/auth/client";
 import { toast } from "sonner";
 
 export function Tasks({
@@ -28,6 +28,8 @@ export function Tasks({
   isLoading: boolean;
 }) {
   const { user } = useUser();
+
+  const { has } = useAuth();
 
   const [updatingId, setUpdatingId] = useState("");
   const queryClient = useQueryClient();
@@ -67,10 +69,15 @@ export function Tasks({
 
     const isUserAssignedTask = taskAssignedToUser.includes(draggableId);
 
-    if (!isUserAssignedTask) {
+    if (!has) return;
+
+    const havePermissions = has({ role: "org:admin" });
+
+    if (!isUserAssignedTask || !havePermissions) {
       setUpdatingId("");
       return toast("I am really sorry!", {
-        description: "You can only update the tasks assigned to you.!",
+        description:
+          "Only the assignee and the manager can change the status of the task!",
         action: {
           label: "Apologize",
           onClick: () => console.log("Thank you."),
@@ -84,7 +91,9 @@ export function Tasks({
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["tasks"] });
+          queryClient.invalidateQueries({
+            queryKey: ["tasks", { id: draggableId }],
+          });
           setUpdatingId("");
         },
       },
@@ -98,6 +107,7 @@ export function Tasks({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-auto">
             {["TODO", "IN_PROGRESS", "COMPLETED"].map((item, i) => (
               <TaskColumn
+                key={i}
                 column={{
                   id: item,
                   title: item[0] + item.slice(1).toLowerCase(),

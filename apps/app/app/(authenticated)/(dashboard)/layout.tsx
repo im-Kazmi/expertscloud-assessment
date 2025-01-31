@@ -13,14 +13,15 @@ type AppLayoutProperties = {
 const AppLayout = ({ children }: AppLayoutProperties) => {
   const { user, isSignedIn } = useUser();
 
-  if (!isSignedIn) {
-    RedirectToSignIn({});
-  }
   const { membership, organization, isLoaded } = useOrganization({
     memberships: true,
   });
 
   const { setActive } = useOrganizationList();
+
+  if (!isSignedIn) {
+    RedirectToSignIn({});
+  }
 
   if (isSignedIn && isLoaded && (!membership || !organization)) {
     return redirect("/create-org");
