@@ -14,7 +14,9 @@ export const createTaskSchema = z.object({
   description: z.string().optional(),
   status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED"]).optional(),
   priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
-  dueDate: z.string().optional(),
+  dueDate: z.string().min(2, {
+    message: "Due date can't be null",
+  }),
   projectId: z.string(),
 });
 

@@ -13,6 +13,9 @@ TaskFlow is an open-source task management application designed to help individu
 
 - Task creation and organization
 - Task grouping
+- Team management
+- Task Assignment
+- Kanban Board
 - Priority settings
 - Customizable task views
 - Secure and private data handling
@@ -31,9 +34,9 @@ TaskFlow is built with a modern and robust tech stack:
 - **rpc**: Hono RPC
 - **Server State**: Tanstack React Query
 - **UI State**: Zustand
-- **Database**: Neon Serverless Postgres Database
+- **Database**: Neon Serverless Posgres Database
 - **ORM**: Prisma
-- **Authentication**: NextAuth
+- **Authentication**: Clerk
 - **Deployment**: Vercel
 
 ## Installation

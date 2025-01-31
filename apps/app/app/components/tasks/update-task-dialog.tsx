@@ -32,6 +32,7 @@ export function UpdateTaksDialog() {
       },
       {
         onSuccess: (data, vars) => {
+          queryClient.refetchQueries();
           onClose();
         },
       },

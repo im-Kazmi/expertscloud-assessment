@@ -57,7 +57,7 @@ export function TaskAssigneeForm({
         queryClient.invalidateQueries({
           queryKey: ["tasks", { taskId }, "assignees"],
         });
-        queryClient.cancelQueries();
+        queryClient.refetchQueries();
         onClose?.();
       },
     });
