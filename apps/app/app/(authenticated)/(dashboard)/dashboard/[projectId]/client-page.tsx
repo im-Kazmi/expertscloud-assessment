@@ -5,8 +5,7 @@ import DashboardHeader from "@/app/components/dashboard/dashboard-header";
 import { Button } from "@repo/design-system/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { useCreateTaskDialog } from "@/app/store/use-create-task-dialog";
-import { useUser } from "@repo/auth/client";
-import { useMemo } from "react";
+import { Protect } from "@repo/auth/client";
 type Props = {
   id: string;
 };
@@ -19,9 +18,11 @@ export function ClientPage({ id }: Props) {
     <div>
       <DashboardHeader>
         <h1 className="text-xl font-bold text-gray-800">Manage Tasks</h1>
-        <Button onClick={() => onOpen(id)}>
-          <PlusCircle className="mr-2 h-4 w-4" /> Add Task
-        </Button>
+        <Protect condition={(has) => has({ role: "org:admin" })}>
+          <Button onClick={() => onOpen(id)}>
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Task
+          </Button>
+        </Protect>
       </DashboardHeader>
       <Tasks
         tasks={(project?.tasks as any) ?? []}
