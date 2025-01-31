@@ -23,7 +23,7 @@ const AppLayout = ({ children }: AppLayoutProperties) => {
   const { setActive } = useOrganizationList();
 
   if (isSignedIn && isLoaded && (!membership || !organization)) {
-    return redirect("/create-org");
+    return redirect("/dashboard/create-org");
   }
 
   return (
