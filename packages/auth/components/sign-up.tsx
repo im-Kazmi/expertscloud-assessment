@@ -1,11 +1,11 @@
-import { SignUp as ClerkSignUp } from '@clerk/nextjs';
+import { SignUp as ClerkSignUp } from "@clerk/nextjs";
 
 export const SignUp = () => (
   <ClerkSignUp
-    forceRedirectUrl="/onboarding"
+    forceRedirectUrl="/dashboard"
     appearance={{
       elements: {
-        header: 'hidden',
+        header: "hidden",
       },
     }}
   />
