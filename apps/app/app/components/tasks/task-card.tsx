@@ -118,6 +118,7 @@ export function TaskCard({ task, taskAssignedToUser }: TaskCardProps) {
                   variant={"secondary"}
                   size={"sm"}
                   className="size-fit"
+                  onClick={onAddAssigneeClick}
                 >
                   {assignee?.user.name}
                 </Button>
