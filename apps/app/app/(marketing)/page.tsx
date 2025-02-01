@@ -13,7 +13,7 @@ export default function Page() {
           className="flex items-center justify-between p-6 lg:px-8"
         >
           <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
+            <a href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">expertscloud</span>
               <img alt="logo" src="../icon.png" className="size-8" />
             </a>
@@ -67,9 +67,11 @@ export default function Page() {
               efficiently.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button className=" bg-gradient-to-r from-green-300 to-teal-400">
-                Get started
-              </Button>
+              <Link href="/dashboard">
+                <Button className=" bg-gradient-to-r from-green-300 to-teal-400">
+                  Get started
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
