@@ -39,7 +39,10 @@ const AppLayout = ({ children }: AppLayoutProperties) => {
   if (isSignedIn && isLoaded && !userMemberships.data?.length) {
     return (
       <div className="flex items-center justify-center min-w-screen min-h-screen">
-        <CreateOrganization afterCreateOrganizationUrl={"/dashboard"} />
+        <CreateOrganization
+          skipInvitationScreen={true}
+          afterCreateOrganizationUrl={"/dashboard"}
+        />
       </div>
     );
   }
