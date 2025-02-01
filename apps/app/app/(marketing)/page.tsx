@@ -18,7 +18,7 @@ export default function Page() {
               <img alt="logo" src="../icon.png" className="size-8" />
             </a>
           </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <div className=" lg:flex lg:flex-1 lg:justify-end">
             <div className="flex gap-x-3">
               <SignedIn>
                 <Button className=" bg-gradient-to-r from-green-300 to-teal-400">
