@@ -1,6 +1,6 @@
 <div align="center">
   <h1>TaskFlow</h1>
-  <p>An open-source task management app designed to simplify your workflow.</p>
+  <p>A task management app designed to simplify your workflow.</p>
 </div>
 
 ## Introduction
